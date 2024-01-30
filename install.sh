@@ -160,41 +160,41 @@ yes Y | apt remove --purge vitis-ai-runtime
 python3 -m pip install pynq-dpu==2.5 --no-build-isolation
 
 
-if [[ "$board" == "KV260" ]]
-then
-	echo "KV260 notebooks"
-	#Install PYNQ-HelloWorld
-	python3 -m pip install pynq_helloworld --no-build-isolation 
+# if [[ "$board" == "KV260" ]]
+# then
+# 	echo "KV260 notebooks"
+# 	#Install PYNQ-HelloWorld
+# 	python3 -m pip install pynq_helloworld --no-build-isolation 
 
-	#Install base overlay
-	python3 -m pip install .
+# 	#Install base overlay
+# 	python3 -m pip install .
 	
-	# Install composable overlays
-	pushd /tmp
-	rm -rf ./PYNQ_Composable_Pipeline
-	git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git -b v1.1.0-dev
-	#git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git 
-	python3 -m pip install PYNQ_Composable_Pipeline/ --no-use-pep517
-	popd
+# 	# Install composable overlays
+# 	pushd /tmp
+# 	rm -rf ./PYNQ_Composable_Pipeline
+# 	git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git -b v1.1.0-dev
+# 	#git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git 
+# 	python3 -m pip install PYNQ_Composable_Pipeline/ --no-use-pep517
+# 	popd
 
-	# Install Pynq Peripherals
-	python3 -m pip install git+https://github.com/Xilinx/PYNQ_Peripherals.git
+# 	# Install Pynq Peripherals
+# 	python3 -m pip install git+https://github.com/Xilinx/PYNQ_Peripherals.git
 
-	# Install DPU-PYNQ
-	yes Y | apt remove --purge vitis-ai-runtime
-	python3 -m pip install pynq-dpu==2.5 --no-build-isolation
-fi
+# 	# Install DPU-PYNQ
+# 	yes Y | apt remove --purge vitis-ai-runtime
+# 	python3 -m pip install pynq-dpu==2.5 --no-build-isolation
+# fi
 
-if [[ "$board" == "KR260" ]]
-then
-	echo "KR260 notebooks"
-	#Install PYNQ-HelloWorld
-	python3 -m pip install pynq_helloworld --no-build-isolation 
+# if [[ "$board" == "KR260" ]]
+# then
+# 	echo "KR260 notebooks"
+# 	#Install PYNQ-HelloWorld
+# 	python3 -m pip install pynq_helloworld --no-build-isolation 
 
-	# Install DPU-PYNQ
-	yes Y | apt remove --purge vitis-ai-runtime
-	python3 -m pip install pynq-dpu==2.5 --no-build-isolation
-fi
+# 	# Install DPU-PYNQ
+# 	yes Y | apt remove --purge vitis-ai-runtime
+# 	python3 -m pip install pynq-dpu==2.5 --no-build-isolation
+# fi
 
 # if [[ "$board" == "KD240" ]]
 # then
