@@ -136,8 +136,8 @@ echo "$BOARD" > /etc/xocl.txt
 pushd dts/
 make
 mkdir -p /usr/local/share/pynq-venv/pynq-dts/
-cp insert_dtbo.py pynq.dtbo /usr/local/share/pynq-venv/pynq-dts/
-echo "python3 /usr/local/share/pynq-venv/pynq-dts/insert_dtbo.py" >> /etc/profile.d/pynq_venv.sh
+# START cp insert_dtbo.py pynq.dtbo /usr/local/share/pynq-venv/pynq-dts/
+# FINISH echo "python3 /usr/local/share/pynq-venv/pynq-dts/insert_dtbo.py" >> /etc/profile.d/pynq_venv.sh
 
 source /etc/profile.d/pynq_venv.sh
 popd
@@ -147,6 +147,18 @@ popd
 # flag to determine which packages are loaded 
 # onto which board.
 # =========================================================
+
+echo "ZCU102 notebooks"
+#Install PYNQ-HelloWorld
+python3 -m pip install pynq_helloworld --no-build-isolation
+
+#Install base overlay
+python3 -m pip install .
+
+# Install DPU-PYNQ
+yes Y | apt remove --purge vitis-ai-runtime
+python3 -m pip install pynq-dpu==2.5 --no-build-isolation
+
 
 if [[ "$board" == "KV260" ]]
 then
@@ -184,73 +196,74 @@ then
 	python3 -m pip install pynq-dpu==2.5 --no-build-isolation
 fi
 
-if [[ "$board" == "KD240" ]]
-then
-      python3 -m pip install IPython # I'm not sure if this is required?
-      git clone https://github.com/MakarenaLabs/DPU-PYNQ.git
-      pushd DPU-PYNQ
-      pip3 install -e . --no-build-isolation
+# if [[ "$board" == "KD240" ]]
+# then
+#       python3 -m pip install IPython # I'm not sure if this is required?
+#       git clone https://github.com/MakarenaLabs/DPU-PYNQ.git
+#       pushd DPU-PYNQ
+#       pip3 install -e . --no-build-isolation
       
-      # copy the notebooks
-      cp -r pynq_dpu/kd240_notebooks /home/root/jupyter_notebooks/
-      cp pynq_dpu/kd240_notebooks/dpu.* /usr/lib
-      popd
-fi
+#       # copy the notebooks
+#       cp -r pynq_dpu/kd240_notebooks /home/root/jupyter_notebooks/
+#       cp pynq_dpu/kd240_notebooks/dpu.* /usr/lib
+#       popd
+# fi
 
-# Deliver all notebooks
-yes Y | pynq-get-notebooks -p $PYNQ_JUPYTER_NOTEBOOKS -f
+# # Deliver all notebooks
+# yes Y | pynq-get-notebooks -p $PYNQ_JUPYTER_NOTEBOOKS -f
 
-# Copy additional notebooks from pynq
-cp pynq/pynq/notebooks/common/ -r $PYNQ_JUPYTER_NOTEBOOKS
+# # Copy additional notebooks from pynq
+# cp pynq/pynq/notebooks/common/ -r $PYNQ_JUPYTER_NOTEBOOKS
 
-# =========================================================
+# # =========================================================
 
-# Patch notebooks
-sed -i "s/\/home\/xilinx\/jupyter_notebooks\/common/\./g" $PYNQ_JUPYTER_NOTEBOOKS/common/python_random.ipynb
-sed -i "s/\/home\/xilinx\/jupyter_notebooks\/common/\./g" $PYNQ_JUPYTER_NOTEBOOKS/common/usb_webcam.ipynb
+# # Patch notebooks
+# sed -i "s/\/home\/xilinx\/jupyter_notebooks\/common/\./g" $PYNQ_JUPYTER_NOTEBOOKS/common/python_random.ipynb
+# sed -i "s/\/home\/xilinx\/jupyter_notebooks\/common/\./g" $PYNQ_JUPYTER_NOTEBOOKS/common/usb_webcam.ipynb
 
 
-for notebook in $PYNQ_JUPYTER_NOTEBOOKS/common/*.ipynb; do
-    sed -i "s/pynq.overlays.base/kv260/g" $notebook
-    sed -i "s/PMODB/PMODA/g" $notebook
-done
+# for notebook in $PYNQ_JUPYTER_NOTEBOOKS/common/*.ipynb; do
+#     sed -i "s/pynq.overlays.base/kv260/g" $notebook
+#     sed -i "s/PMODB/PMODA/g" $notebook
+# done
 
-if [[ "$board" == "KV260" ]]
-then
-	for notebook in $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/*/*.ipynb; do
-	    sed -i "s/pynq.overlays.base/kv260/g" $notebook
-	    sed -i "s/PMODB/PMODA/g" $notebook
-	done
-fi
+# # if [[ "$board" == "KV260" ]]
+# # then
+# # 	for notebook in $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/*/*.ipynb; do
+# # 	    sed -i "s/pynq.overlays.base/kv260/g" $notebook
+# # 	    sed -i "s/PMODB/PMODA/g" $notebook
+# # 	done
+# # fi
 
-sed -i 's/Specifically a RALink WiFi dongle commonly used with \\n//g' $PYNQ_JUPYTER_NOTEBOOKS/common/wifi.ipynb
-sed -i 's/Raspberry Pi kits is connected into the board.//g' $PYNQ_JUPYTER_NOTEBOOKS/common/wifi.ipynb
+# sed -i 's/Specifically a RALink WiFi dongle commonly used with \\n//g' $PYNQ_JUPYTER_NOTEBOOKS/common/wifi.ipynb
+# sed -i 's/Raspberry Pi kits is connected into the board.//g' $PYNQ_JUPYTER_NOTEBOOKS/common/wifi.ipynb
 
 # Patch microblaze to use virtualenv libraries
 sed -i "s/opt\/microblaze/usr\/local\/share\/pynq-venv\/bin/g" /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq/lib/pynqmicroblaze/rpc.py
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Remove unnecessary notebooks
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# # Remove unnecessary notebooks
+# # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-if [[ "$board" == "KV260" ]]
-then
-	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/app* $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/grove_joystick
-fi
+# if [[ "$board" == "KV260" ]]
+# then
+# 	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/app* $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/grove_joystick
+# fi
 
-if [[ "$board" == "KR260" ]]
-then
-	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/common/zynq_clocks.ipynb	
-	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/common/overlay_download.ipynb	
-fi
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# if [[ "$board" == "KR260" ]]
+# then
+# 	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/common/zynq_clocks.ipynb	
+# 	rm -rf $PYNQ_JUPYTER_NOTEBOOKS/common/overlay_download.ipynb	
+# fi
+# # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-# Change notebooks folder ownership and permissions
-chown $LOGNAME:$LOGNAME -R $PYNQ_JUPYTER_NOTEBOOKS
-chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
+# # Change notebooks folder ownership and permissions
+# chown $LOGNAME:$LOGNAME -R $PYNQ_JUPYTER_NOTEBOOKS
+# chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
 
-# Start Jupyter services 
+# Start Jupyter and pl_server services now
 systemctl start jupyter.service
+systemctl start pl_server.service
 
 # Start the service for clearing the statefile on boot
 cp pynq/sdbuild/packages/clear_pl_statefile/clear_pl_statefile.sh /usr/local/bin
@@ -273,20 +286,20 @@ echo "  exit" >> selftest.sh
 echo "fi" >> selftest.sh
 echo "source /etc/profile.d/pynq_venv.sh" >> selftest.sh
 
-if [[ "$board" == "KV260" ]]
-then
-	echo "pushd /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_composable/runtime_tests" >> selftest.sh
-	echo "python3 -m pytest test_apps.py" >> selftest.sh
-	echo "python3 -m pytest test_composable.py" >> selftest.sh
-	echo "python3 -m pytest test_mmio_partial_bitstreams.py" >> selftest.sh
-	echo "popd" >> selftest.sh
-	echo "python3 -m pytest /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_dpu/tests" >> selftest.sh
-fi
+# if [[ "$board" == "KV260" ]]
+# then
+# 	echo "pushd /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_composable/runtime_tests" >> selftest.sh
+# 	echo "python3 -m pytest test_apps.py" >> selftest.sh
+# 	echo "python3 -m pytest test_composable.py" >> selftest.sh
+# 	echo "python3 -m pytest test_mmio_partial_bitstreams.py" >> selftest.sh
+# 	echo "popd" >> selftest.sh
+# 	echo "python3 -m pytest /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_dpu/tests" >> selftest.sh
+# fi
 
-if [[ "$board" == "KR260" ]]
-then
-	echo "python3 -m pytest /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_dpu/tests" >> selftest.sh
-fi
+# if [[ "$board" == "KR260" ]]
+# then
+# 	echo "python3 -m pytest /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq_dpu/tests" >> selftest.sh
+# fi
 chmod a+x ./selftest.sh
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
