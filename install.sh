@@ -263,7 +263,7 @@ sed -i "s/opt\/microblaze/usr\/local\/share\/pynq-venv\/bin/g" /usr/local/share/
 
 # Start Jupyter and pl_server services now
 systemctl start jupyter.service
-systemctl start pl_server.service
+# systemctl start pl_server.service
 
 # Start the service for clearing the statefile on boot
 cp pynq/sdbuild/packages/clear_pl_statefile/clear_pl_statefile.sh /usr/local/bin
