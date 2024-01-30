@@ -16,52 +16,6 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#    Input Arguments
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-USAGE="${RED} usage: ${NC}  sudo ./install -b '{KV260 | KR260 | KD240}'"
-
-if [ "$#" -ne 2 ]; then
-   echo -e $USAGE
-   exit 0 
-fi
-
-while getopts b: flag
-do
-    case "${flag}" in
-        b) board=${OPTARG};;
-        *) echo -e $USAGE; exit 0;;
-    esac
-done
-
-case $board in
-	"KV260") echo -e ;;
-	"KR260") echo -e ;;
-	"KD240") echo -e ;;
-	*) echo -e $USAGE; exit 0;;
-esac
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-source /etc/lsb-release
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#    Check ubuntu version 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-case $DISTRIB_RELEASE in
-        20.04)
-                echo -e "${RED}This version of Kria-PYNQ is not compatible with Ubuntu 20.04 please checkout tag v1.0 with the command${NC}"
-                echo -e "\n\t\tgit checkout tags/v1.0\n"
-                exit 1
-                ;;
-        22.04)
-                echo -e "${GREEN}Ubuntu version 22.04 and Kria-PYNQ v3.0 version match${NC}"
-                ;;
-        *)
-                echo -e "${RED}Incompatible version of Ubuntu with Kria-PYNQ. Or unable to determine distribution version from /etc/lsb-release${NC}"
-                exit 1
-                ;;
-esac
-
-
 echo -e "${GREEN}Installing PYNQ, this process takes around 25 minutes ${NC}"
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -84,7 +38,7 @@ popd
 ARCH=aarch64
 HOME=/root
 PYNQ_JUPYTER_NOTEBOOKS=$(readlink -f ~)/jupyter_notebooks
-BOARD=$board
+BOARD=ZCU102
 PYNQ_VENV=/usr/local/share/pynq-venv
 
 # Get PYNQ SDbuild Packages
@@ -117,7 +71,7 @@ apt update
 
 apt-get -o DPkg::Lock::Timeout=10 update && \
 apt-get install -y python3.10-venv python3-cffi libssl-dev libcurl4-openssl-dev \
-  portaudio19-dev libcairo2-dev libdrm-xlnx-dev libopencv-dev python3-opencv graphviz i2c-tools \
+  portaudio19-dev libcairo2-dev libdrm-dev libopencv-dev python3-opencv graphviz i2c-tools \
   fswebcam libboost-all-dev python3-dev python3-pip
 
 # Install PYNQ Virtual Environment 
