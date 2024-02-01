@@ -1,4 +1,4 @@
-This repository contains the install scripts needed to add PYNQ to the official Ubuntu SDCard Image of your ZCU102 based on the installation for Kria SOMs.
+This repository contains the installation scripts needed to add PYNQ to the official Ubuntu SDCard Image of your ZCU102, based on the installation for Kria SOMs.
 
 Versions:
 - [Ubuntu 22.04 LTS from Canonical]()
