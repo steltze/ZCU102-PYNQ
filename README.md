@@ -55,3 +55,5 @@ Search for the `ZCU102` board links and use `wget + link` to download them.
 The modules need to be renamed to `dpu.bit, dpu.hwh and dpu.xclbin` and be in the same folder with the notebook or added to the path. 
 
 The DPU Overlay is pre-compiled with a specific configuration found [here](https://github.com/Xilinx/DPU-PYNQ/tree/208a3d5175e19c0d7e2cc342aacb19b36b7738a6/boards/zcu102). If there is a need to change configurations, the DPU has to be re-built on a host machine with Vitis AI 2.5.0
+
+After including the dpu modules in the installation files manually, the tests execute succesfuly with `python3 -m pytest --pyargs pynq_dpu`.
