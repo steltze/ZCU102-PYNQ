@@ -1,11 +1,11 @@
-![](./kriapynq.png)
+This repository contains the install scripts needed to add PYNQ to the official Ubuntu SDCard Image of your ZCU102 based on the installation for Kria SOMs.
 
-This repository contains the install scripts needed to add PYNQ to the official Ubuntu SDCard Image of your:
-* Kria KV260 Vision AI Starter Kit  
-* Kria KR260 Robotic Starter Kit
-* Kria KD240 Drives Starter Kit
+Versions:
+- [Ubuntu 22.04 LTS from Canonical]()
+- [PYNQ 3.0.1](https://github.com/Xilinx/PYNQ)
+- [PYNQ-DPU 2.5](https://github.com/Xilinx/DPU-PYNQ)
 
-From that installation, a complete Python and Jupyter environment is installed on the Kria SOM along with multiple programmable logic overlays all ready to use.  
+A complete Python and Jupyter environment is installed on the ZCU102 development board.
 
 ## Installation
 
@@ -15,80 +15,43 @@ From that installation, a complete Python and Jupyter environment is installed o
 If you wish to run Ubuntu 22.04 LTS, you may need to update the boot firmware to the latest version. For example, 2022.1 boot firmware is recommended for Ubuntu 22.04 LTS user. Ubuntu may not boot with mismatched firmware.
 The update methods can be found in [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Ubuntu-LTS).
 
-#### KV260
-Follow the steps to [Get Started with Kria KV260 Vision AI Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/kv260-getting-started-ubuntu/setting-up-the-sd-card-image.html) until you complete the [Booting your Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/kv260-getting-started-ubuntu/booting-your-starter-kit.html) section.
+The Ubuntu 22.04 image can be found [here](https://ubuntu.com/download/amd), go to `Zynq UltraScale+ MPSoC Development boards`->`Download 22.04 LTS`.
 
-#### KR260
-Follow the steps to [Get Started with Kria KR260 Robotic Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit/kr260-getting-started/setting-up-the-sd-card-image.html) until you complete the [Booting your Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit/kr260-getting-started/booting-your-starter-kit.html) section.
-
-#### KD240
-Follow the steps to [Get Started with Kria KD240 Drives Starter Kit](https://www.xilinx.com/products/som/kria/kd240-drives-starter-kit/kd240-getting-started/getting-started.html) until you complete the Booting your Starter Kit section.
+[Here](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/2363129857/Getting+Started+with+Certified+Ubuntu+22.04+LTS+for+Xilinx+Devices) there are instructions for the installation of the image, basically just burn the image into an SD Card, compatible with the ZCU102 Development board.
 
 #### 2. Install PYNQ
-Then install PYNQ on your Kria device.  Simply clone this repository from your Kria and run the install.sh script specifying the device with the `-b` flag.
+- Connect the SD Card to the board
+- For the communication between the host and the target board, use either the UART-USB connector and a program like `Minicom` to read from the serial port. Alternatively, connect the board to an Ethernet port and connect to it via *ssh*
+
+#### 3. Install PYNQ
+While connected to the ZCU102 board, clone this repository and run the `install.sh` script.
 
 ```bash
 git clone https://github.com/Xilinx/Kria-PYNQ.git
-cd Kria-PYNQ/
-sudo bash install.sh -b { KV260 | KR260 | KD240 } 
+cd ZCU102-PYNQ/
+sudo bash install.sh 
 ```
 
 This script will install the required debian packages, create Python virtual environment and configure a Jupyter portal.  This process takes around 25 minutes.
 
-#### 3. Open Jupyter
+The script is a modification of the script for Kria boards, according to [this discussion](https://discuss.pynq.io/t/an-attempt-to-install-pynq-on-ubuntu-for-zcu102/3809) in the PYNQ forum.
 
-JupyterLab can now be accessed via a web browser `<ip_address>:9090/lab` or `kria:9090/lab`. The password is **xilinx**
+#### 4. Open Jupyter
 
-## Included Overlays
+JupyterLab can now be accessed via a web browser `<ip_address>:9090/lab`. The password is **xilinx**
 
-#### Base Overlay [\[GitHub\]](kv260/base) 
+## DPU Overlay 
+THe `install.sh` script includes the installation of the DPU Overlay.
 
-This overlay includes support for the KV260's Raspberry Pi camera and PMOD interfaces.  A [Digilent Pcam 5C](https://digilent.com/reference/add-ons/pcam-5c/start?redirect=1) camera can be attached to the KV260 and controlled from Jupyter notebooks.  Additionally, a variety of Grove and PMOD devices are supported on the PMOD interface - all controllable from a Xilinx Microblaze processor in programmable logic.  
+Clone the [PYNQ-DPU repo](https://github.com/Xilinx/DPU-PYNQ/tree/master)
 
-__Supported boards__: _KV260_ 
+Manually install the ZCU102 dpu modules from the links provided in
+- pynq_dpu/dpu.bit.link
+- pynq_dpu/dpu.hwh.link
+- pynq_dpu/dpu.xclbin.link
 
-#### DPU-PYNQ (v2.5) [\[GitHub\]](https://github.com/Xilinx/DPU-PYNQ) [\[PYPI\]](https://pypi.org/project/pynq-dpu/)
-This overlay contains a Vitis-AI 2.5.0 Deep Learning Processor Unit (DPU) and comes with a variety of notebook examples with pre-trained ML models.
+Search for the `ZCU102` board links and use `wget + link` to download them.
 
-__Supported boards__: _KV260_, _KR260_, _KD240_
+The modules need to be renamed to `dpu.bit, dpu.hwh and dpu.xclbin` and be in the same folder with the notebook or added to the path. 
 
-#### Composable Pipeline (v1.1 soft-release) [\[GitHub\]](https://github.com/Xilinx/PYNQ_Composable_Pipeline) 
-The Composable pipeline is an overlay with a novel and clever architecture that allow us to adapt how the data flows between a series of IP cores.
-
-__Supported boards__: _KV260_ 
-
-#### PYNQ-Helloworld [\[GitHub\]](https://github.com/Xilinx/PYNQ-HelloWorld) [\[PYPI\]](https://pypi.org/project/pynq-helloworld/)
-One of PYNQ's first overlays, the PYNQ-Helloworld overlay includes an image resizer block in programmable logic.  This overlay demonstrates a simple but powerful use of programmable logic HLS blocks to do image processing. 
-
-__Supported boards__: _KV260_, _KR260_ 
-
-## Selftest
-
-A self-test script for each board is generated at the end of the build. This test script runs some of the Overlay tests. 
-For some of the tests specific peripherals need to be connected to the board:
-
-| **Board** | **Test name** | **Peripherals**                                                             |
-|-----------|---------------|-----------------------------------------------------------------------------|
-| KV260     | test\_apps     | <ul><li>1. A monitor connected to either the HDMI or DisplayPort</li><li>2. A USB Webcamera</li></ul>  |
-
-To run the self-test navigate to the ``Kria-PYNQ`` install directory and run:
-```bash
-sudo ./selftest.sh
-```
-
-## References
-
-- [PYNQ](https://www.pynq.io)
-- [KV260 Vision AI Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit)
-- [KR260 Robotic Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html)
-- [KD240 Drives Starter Kit](https://www.xilinx.com/products/som/kria/kd240-drives-starter-kit.html)
-- [Canonical Xilinx Ubuntu Images](https://ubuntu.com/download/xilinx)
-- [Kria K26 SOM WiKi](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#)
-
-
-----
-----
-
-Copyright (C) 2021 Xilinx, Inc
-
-SPDX-License-Identifier: BSD-3 License
+The DPU Overlay is pre-compiled with a specific configuration found [here](https://github.com/Xilinx/DPU-PYNQ/tree/208a3d5175e19c0d7e2cc342aacb19b36b7738a6/boards/zcu102). If there is a need to change configurations, the DPU has to be re-built on a host machine with Vitis AI 2.5.0
