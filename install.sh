@@ -279,12 +279,12 @@ apt-get install ffmpeg libsm6 libxext6 -y
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 python3 -m pip install pytest
 
-echo "#!/bin/bash" > selftest.sh
-echo "if [ \"\$EUID\" -ne 0 ]" >> selftest.sh
-echo "  then echo -e \"\${RED}Please run as root\${NC}\"" >> selftest.sh
-echo "  exit" >> selftest.sh
-echo "fi" >> selftest.sh
-echo "source /etc/profile.d/pynq_venv.sh" >> selftest.sh
+# echo "#!/bin/bash" > selftest.sh
+# echo "if [ \"\$EUID\" -ne 0 ]" >> selftest.sh
+# echo "  then echo -e \"\${RED}Please run as root\${NC}\"" >> selftest.sh
+# echo "  exit" >> selftest.sh
+# echo "fi" >> selftest.sh
+# echo "source /etc/profile.d/pynq_venv.sh" >> selftest.sh
 
 # if [[ "$board" == "KV260" ]]
 # then
